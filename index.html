@@ -1,86 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Background Color Test</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #3498db;
-            color: white;
-            text-align: center;
-            transition: background-color 1s ease;
-        }
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        p {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        button {
-            background-color: white;
-            border: none;
-            color: #333;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        button:hover {
-            transform: scale(1.05);
-        }
-    </style>
+    <title>Test Page</title>
 </head>
-<body>
-    <h1>Hello, GitHub Pages!</h1>
-    <p>The page is working correctly.</p>
-    <button id="changeColor">Change Background Color</button>
-
+<body style="background-color: blue; color: white; font-family: Arial; text-align: center; padding-top: 100px;">
+    <h1>This is a test page</h1>
+    <p>If you can see this text on a blue background, your page is working!</p>
+    <p>Page loaded at: <span id="time"></span></p>
+    
     <script>
-        // Array of background colors to cycle through
-        const colors = [
-            '#3498db', // Blue
-            '#e74c3c', // Red
-            '#2ecc71', // Green
-            '#f39c12', // Orange
-            '#9b59b6'  // Purple
-        ];
-        
-        let currentColorIndex = 0;
-        
-        // Get the button element
-        const colorButton = document.getElementById('changeColor');
-        
-        // Add click event listener
-        colorButton.addEventListener('click', function() {
-            // Move to the next color (cycle back to beginning if at the end)
-            currentColorIndex = (currentColorIndex + 1) % colors.length;
-            
-            // Apply the new background color
-            document.body.style.backgroundColor = colors[currentColorIndex];
-            
-            // Add some text to show it's working
-            const timestamp = new Date().toLocaleTimeString();
-            colorButton.textContent = `Changed at ${timestamp}`;
-            
-            // Reset button text after 2 seconds
-            setTimeout(function() {
-                colorButton.textContent = 'Change Background Color';
-            }, 2000);
-        });
-        
-        // Log to console to help with debugging
-        console.log('Script loaded successfully!');
+        document.getElementById('time').textContent = new Date().toString();
     </script>
 </body>
 </html>
