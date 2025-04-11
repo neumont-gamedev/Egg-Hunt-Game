@@ -1,61 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Phaser Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Color Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            transition: background-color 1s ease;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        button {
+            background-color: white;
+            border: none;
+            color: #333;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 <body>
-    <div id="debug" style="position:fixed; top:0; left:0; background:white; padding:10px; z-index:9999;">
-        Debug info will appear here
-    </div>
-    
-    <script>
-        // Debug helper
-        function log(msg) {
-            console.log(msg);
-            document.getElementById('debug').innerHTML += '<br>' + msg;
-        }
-        
-        log('Page loaded');
-        window.onerror = function(message, source, lineno, colno, error) {
-            log('ERROR: ' + message);
-            return false;
-        };
-    </script>
+    <h1>Hello, GitHub Pages!</h1>
+    <p>The page is working correctly.</p>
+    <button id="changeColor">Change Background Color</button>
 
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
-    
     <script>
-        log('Trying to initialize Phaser...');
+        // Array of background colors to cycle through
+        const colors = [
+            '#3498db', // Blue
+            '#e74c3c', // Red
+            '#2ecc71', // Green
+            '#f39c12', // Orange
+            '#9b59b6'  // Purple
+        ];
         
-        if (typeof Phaser === 'undefined') {
-            log('Phaser is not defined!');
-        } else {
-            log('Phaser version: ' + Phaser.VERSION);
+        let currentColorIndex = 0;
+        
+        // Get the button element
+        const colorButton = document.getElementById('changeColor');
+        
+        // Add click event listener
+        colorButton.addEventListener('click', function() {
+            // Move to the next color (cycle back to beginning if at the end)
+            currentColorIndex = (currentColorIndex + 1) % colors.length;
             
-            // Super simple Phaser game
-            const config = {
-                type: Phaser.AUTO,
-                width: 800,
-                height: 600,
-                backgroundColor: '#2d2d2d',
-                scene: {
-                    create: function() {
-                        log('Scene created');
-                        this.add.text(400, 300, 'Phaser is working!', { 
-                            fill: '#00ff00' 
-                        }).setOrigin(0.5);
-                    }
-                }
-            };
+            // Apply the new background color
+            document.body.style.backgroundColor = colors[currentColorIndex];
             
-            try {
-                log('Creating game object...');
-                const game = new Phaser.Game(config);
-                log('Game created successfully');
-            } catch (e) {
-                log('Error creating game: ' + e.message);
-            }
-        }
+            // Add some text to show it's working
+            const timestamp = new Date().toLocaleTimeString();
+            colorButton.textContent = `Changed at ${timestamp}`;
+            
+            // Reset button text after 2 seconds
+            setTimeout(function() {
+                colorButton.textContent = 'Change Background Color';
+            }, 2000);
+        });
+        
+        // Log to console to help with debugging
+        console.log('Script loaded successfully!');
     </script>
 </body>
 </html>
