@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Test Page</title>
+    <title>Egg Hunt Test</title>
 </head>
-<body style="background-color: blue; color: white; font-family: Arial; text-align: center; padding-top: 100px;">
-    <h1>This is a test page</h1>
-    <p>If you can see this text on a blue background, your page is working!</p>
-    <p>Page loaded at: <span id="time"></span></p>
-    
+<body style="background-color: #f0c; color: white; font-size: 24px; text-align: center; padding-top: 100px;">
+    <h1>Egg Hunt Game</h1>
+    <p>Basic page test - if you see this, HTML is working!</p>
     <script>
-        document.getElementById('time').textContent = new Date().toString();
+        document.body.innerHTML += '<p>JavaScript is also working! Time: ' + new Date() + '</p>';
     </script>
 </body>
 </html>
