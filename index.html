@@ -4,10 +4,43 @@
     <title>Egg Hunt Test</title>
 </head>
 <body style="background-color: #f0c; color: white; font-size: 24px; text-align: center; padding-top: 100px;">
+    <div id="debug" style="position:fixed; top:0; left:0; background:black; color:lime; padding:10px; z-index:1000; text-align:left; font-size:14px; font-family:monospace;">
+        Starting debug output...
+    </div>
+    
     <h1>Egg Hunt Game</h1>
     <p>Basic page test - if you see this, HTML is working!</p>
+    
     <script>
+        // Debug function
+        function log(message) {
+            console.log(message);
+            var debugDiv = document.getElementById('debug');
+            debugDiv.innerHTML += '<br>' + message;
+        }
+
+        // Log page load events
+        log('Page loaded at: ' + new Date().toTimeString());
+        
+        // Check if scripts are loading
+        log('JavaScript is working!');
+        
+        // Log browser info
+        log('Browser: ' + navigator.userAgent);
+        
+        // Check for page URL
+        log('Page URL: ' + window.location.href);
+        
+        // Add visible content to confirm JavaScript execution
         document.body.innerHTML += '<p>JavaScript is also working! Time: ' + new Date() + '</p>';
+        
+        // Log after body modification
+        log('Body content modified successfully');
+        
+        // Set up window.onload to detect full page load
+        window.onload = function() {
+            log('Window fully loaded');
+        };
     </script>
 </body>
 </html>
