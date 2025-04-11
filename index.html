@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Phaser Test</title>
+</head>
+<body>
+    <div id="debug" style="position:fixed; top:0; left:0; background:white; padding:10px; z-index:9999;">
+        Debug info will appear here
+    </div>
+    
+    <script>
+        // Debug helper
+        function log(msg) {
+            console.log(msg);
+            document.getElementById('debug').innerHTML += '<br>' + msg;
+        }
+        
+        log('Page loaded');
+        window.onerror = function(message, source, lineno, colno, error) {
+            log('ERROR: ' + message);
+            return false;
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    
+    <script>
+        log('Trying to initialize Phaser...');
+        
+        if (typeof Phaser === 'undefined') {
+            log('Phaser is not defined!');
+        } else {
+            log('Phaser version: ' + Phaser.VERSION);
+            
+            // Super simple Phaser game
+            const config = {
+                type: Phaser.AUTO,
+                width: 800,
+                height: 600,
+                backgroundColor: '#2d2d2d',
+                scene: {
+                    create: function() {
+                        log('Scene created');
+                        this.add.text(400, 300, 'Phaser is working!', { 
+                            fill: '#00ff00' 
+                        }).setOrigin(0.5);
+                    }
+                }
+            };
+            
+            try {
+                log('Creating game object...');
+                const game = new Phaser.Game(config);
+                log('Game created successfully');
+            } catch (e) {
+                log('Error creating game: ' + e.message);
+            }
+        }
+    </script>
+</body>
+</html>
