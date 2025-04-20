@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Egg Hunt Game</title>
+    <!-- Add this to your HTML -->
     <style>
+        html,
         body {
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background-color: #87CEEB;
+            touch-action: none;
+            -webkit-overflow-scrolling: none;
+        }
+
+        #game-container {
+            touch-action: none;
         }
     </style>
     <!-- Include Phaser from CDN (no npm needed) -->
@@ -18,7 +26,9 @@
     <!-- Include Simplex Noise library -->
     <script src="https://cdn.jsdelivr.net/npm/simplex-noise@2.4.0/simplex-noise.min.js"></script>
 </head>
+
 <body>
     <script src="game.js"></script>
 </body>
+
 </html>
