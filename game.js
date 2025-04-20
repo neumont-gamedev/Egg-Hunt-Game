@@ -8,6 +8,7 @@ class EggHuntGame extends Phaser.Scene {
 
     this.eggGridSizeWidth = 40;
     this.eggGridSizeHeight = 40;
+    this.eggsCollected = 0;
 
     this.numEggs = this.eggGridSizeWidth * this.eggGridSizeHeight; // Start with fewer eggs for testing
 
@@ -241,6 +242,9 @@ class EggHuntGame extends Phaser.Scene {
 
           // handle egg clicks
           egg.on('pointerdown', () => {
+            // Increment counter and update text
+            this.eggsCollected++;
+            this.collected.text = `Eggs Collected ${this.eggsCollected}`;
             if (egg.index === this.winningEggIndex) {
               // found the winning egg!
               egg.setTexture(this.eggTextureKeys[this.eggTextureKeys.length-1]);
@@ -345,13 +349,31 @@ class EggHuntGame extends Phaser.Scene {
       this.cameras.main.height + 300
     );
 
-    // Keep the text in the right position when the window is resized
-    // this.scale.on('resize', (gameSize) => {
-    //   instructions.setPosition(
-    //     gameSize.width - 20,
-    //     gameSize.height - 20
-    //   );
-    // });
+    // add collected
+    this.collected = this.add.text(0, 0, `Eggs Collected ${this.eggsCollected}`, {
+      fontSize: '30px',
+      fontFamily: 'Arial, sans-serif',
+      color: '#000000',
+      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      align: 'center',
+      padding: { x: 10, y: 10 },
+      shadow: {
+        offsetX: 3,
+        offsetY: 3,
+        color: 'rgba(0, 0, 0, 0.5)',
+        blur: 2,
+        fill: true
+      }
+    });
+    this.collected.setOrigin(0, 1);
+    this.collected.setScrollFactor(0);
+    this.collected.setDepth(100);
+
+    // Position it in the bottom left corner of the camera viewport
+    this.collected.setPosition(
+      -800,
+      this.cameras.main.height + 300
+    );
       
   }
 
