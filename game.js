@@ -26,13 +26,13 @@ class EggHuntGame extends Phaser.Scene {
     // Define gameAssets as a property of the class so it's accessible in all methods
     this.gameAssets = {
       images: {
-        'egg-default': '/assets/images/eggs/egg.png',
-        'egg-golden': '/assets/images/eggs/egg_win.png',
-        'env-default': '/assets/images/env/grass01.png',
+        'egg-default': './assets/images/eggs/egg.png',
+        'egg-golden': './assets/images/eggs/egg_win.png',
+        'env-default': './assets/images/env/grass01.png',
       },
       audio: {
-        'egg-pickup': '/assets/audio/egg-pickup.wav',
-        'game-win': '/assets/audio/game-win.wav'
+        'egg-pickup': './assets/audio/egg-pickup.wav',
+        'game-win': './assets/audio/game-win.wav'
       }
     };
   }
@@ -66,6 +66,7 @@ class EggHuntGame extends Phaser.Scene {
       loadingText.destroy();
     });
 
+    
     // Load the egg manifest
     this.load.json('game-manifest', 'game-manifest.json');
 
@@ -79,10 +80,7 @@ class EggHuntGame extends Phaser.Scene {
     // Load audio
     this.load.audio('egg-pickup', this.gameAssets.audio['egg-pickup']);
     this.load.audio('game-win', this.gameAssets.audio['game-win']);
-    // Object.entries(this.gameAssets.audio).forEach(([key, path]) => {
-    //   this.load.audio(key, path);
-    // });
-
+    
     // Log preload complete
     this.load.on('complete', () => {
       console.log("Initial preload complete");
