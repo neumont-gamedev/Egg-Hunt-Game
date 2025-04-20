@@ -1,0 +1,34 @@
+{
+    "images": [
+      { "id": "egg1", "path": "assets/images/eggs/badbobrossegg.png", "type": "egg" },
+      { "id": "egg2", "path": "assets/images/eggs/CyclopsEgg.png", "type": "egg" },
+      { "id": "egg3", "path": "assets/images/eggs/egg_.png", "type": "egg" },
+      { "id": "egg4", "path": "assets/images/eggs/egg_wireframe.png", "type": "egg" },
+      { "id": "egg5", "path": "assets/images/eggs/egg2.png", "type": "egg" },
+      { "id": "egg6", "path": "assets/images/eggs/eggku.png", "type": "egg" },
+      { "id": "egg7", "path": "assets/images/eggs/evilegg.png", "type": "egg" },
+      { "id": "egg8", "path": "assets/images/eggs/happy-egg.png", "type": "egg" },
+      { "id": "egg9", "path": "assets/images/eggs/maple.png", "type": "egg" },
+      { "id": "egg10", "path": "assets/images/eggs/krillegg.png", "type": "egg" },
+      { "id": "egg11", "path": "assets/images/eggs/mapleEgg.png", "type": "egg" },
+      { "id": "egg12", "path": "assets/images/eggs/MegaEgg.png", "type": "egg" },
+      { "id": "egg13", "path": "assets/images/eggs/metroid_egg_with_metroid.png", "type": "egg" },
+      { "id": "egg14", "path": "assets/images/eggs/mikuegg_1.png", "type": "egg" },
+      { "id": "egg15", "path": "assets/images/eggs/morph.png", "type": "egg" },
+      { "id": "egg16", "path": "assets/images/eggs/onetooth.png", "type": "egg" },
+      { "id": "egg17", "path": "assets/images/eggs/piccolegg.png", "type": "egg" },
+      { "id": "egg18", "path": "assets/images/eggs/roblox_egg.png", "type": "egg" },
+      { "id": "egg19", "path": "assets/images/eggs/SleepyEgg.png", "type": "egg" },
+      { "id": "egg20", "path": "assets/images/eggs/spongegg.png", "type": "egg" },
+      { "id": "grass01", "path": "assets/images/env/grass01.png", "type": "env" },
+      { "id": "grass02", "path": "assets/images/env/grass02.png", "type": "env" },
+      { "id": "grass03", "path": "assets/images/env/grass03.png", "type": "env" },
+      { "id": "path01", "path": "assets/images/env/path02.png", "type": "env" },
+      { "id": "path02", "path": "assets/images/env/path03.png", "type": "env" },
+      { "id": "fg01", "path": "assets/images/env/rock01.png", "type": "fg" },
+      { "id": "fg02", "path": "assets/images/env/rock02.png", "type": "fg" },
+      { "id": "fg03", "path": "assets/images/env/bush01.png", "type": "fg" },
+      { "id": "fg04", "path": "assets/images/env/bush02.png", "type": "fg" }
+
+    ]
+  }
