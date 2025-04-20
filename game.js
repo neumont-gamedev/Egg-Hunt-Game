@@ -328,13 +328,13 @@ class EggHuntGame extends Phaser.Scene {
       fontSize: '30px',
       fontFamily: 'Arial, sans-serif',
       color: '#000000',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      backgroundColor: 'rgba(255, 255, 255, 0.85)',
       align: 'center',
       padding: { x: 10, y: 10 },
       shadow: {
         offsetX: 3,
         offsetY: 3,
-        color: 'rgba(0, 0, 0, 0.5)',
+        color: 'rgba(0, 0, 0, 0.25)',
         blur: 2,
         fill: true
       }
@@ -354,13 +354,13 @@ class EggHuntGame extends Phaser.Scene {
       fontSize: '30px',
       fontFamily: 'Arial, sans-serif',
       color: '#000000',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      backgroundColor: 'rgba(255, 255, 255, 0.85)',
       align: 'center',
       padding: { x: 10, y: 10 },
       shadow: {
         offsetX: 3,
         offsetY: 3,
-        color: 'rgba(0, 0, 0, 0.5)',
+        color: 'rgba(0, 0, 0, 0.25)',
         blur: 2,
         fill: true
       }
