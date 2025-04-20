@@ -77,9 +77,11 @@ class EggHuntGame extends Phaser.Scene {
     this.load.image(this.envDefault, this.gameAssets.images['env-default']);
 
     // Load audio
-    Object.entries(this.gameAssets.audio).forEach(([key, path]) => {
-      this.load.audio(key, path);
-    });
+    this.load.audio('egg-pickup', this.gameAssets.audio['egg-pickup']);
+    this.load.audio('game-win', this.gameAssets.audio['game-win']);
+    // Object.entries(this.gameAssets.audio).forEach(([key, path]) => {
+    //   this.load.audio(key, path);
+    // });
 
     // Log preload complete
     this.load.on('complete', () => {
