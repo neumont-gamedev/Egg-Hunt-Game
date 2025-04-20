@@ -14,7 +14,7 @@ class EggHuntGame extends Phaser.Scene {
     this.worldSizeWidth = this.eggGridSizeWidth * this.eggWidth; // Size of the scrollable area
     this.worldSizeHeight = this.eggGridSizeHeight * this.eggHeight; // Size of the scrollable area
 
-    this.winningEggIndex = 6;//Math.floor(Math.random() * (this.numEggs - 40)) + 20;
+    this.winningEggIndex = Math.floor(Math.random() * (this.numEggs - 40)) + 20;
   }
 
   preload() {
@@ -162,7 +162,7 @@ class EggHuntGame extends Phaser.Scene {
         this.sounds[soundName].play({
           rate: soundPitch
         });
-        console.log(`Playing sound: ${soundName} with pitch: ${soundPitch}`);
+        //console.log(`Playing sound: ${soundName} with pitch: ${soundPitch}`);
       } else {
         console.warn(`Sound ${soundName} not found in sounds collection`);
       }
