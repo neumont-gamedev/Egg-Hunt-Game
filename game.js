@@ -1,26 +1,36 @@
-// Simple Phaser Egg Hunt Game
+/**
+ * EggHuntGame - A simple Phaser 3 game where players hunt for eggs in a scrollable world
+ * The goal is to find the special golden egg among regular eggs
+ */
 class EggHuntGame extends Phaser.Scene {
   constructor() {
     super({ key: 'EggHuntGame' });
 
+    // Grid and egg size configuration
     this.eggWidth = 100;
     this.eggHeight = 100;
-
     this.eggGridSizeWidth = 40;
     this.eggGridSizeHeight = 40;
+    
+    // Track the number of eggs collected during gameplay
     this.eggsCollected = 0;
 
-    this.numEggs = this.eggGridSizeWidth * this.eggGridSizeHeight; // Start with fewer eggs for testing
+    // Calculate total eggs and world dimensions
+    this.numEggs = this.eggGridSizeWidth * this.eggGridSizeHeight;
+    this.worldSizeWidth = this.eggGridSizeWidth * this.eggWidth;
+    this.worldSizeHeight = this.eggGridSizeHeight * this.eggHeight;
 
-    this.worldSizeWidth = this.eggGridSizeWidth * this.eggWidth; // Size of the scrollable area
-    this.worldSizeHeight = this.eggGridSizeHeight * this.eggHeight; // Size of the scrollable area
-
+    // Generate a random position for the winning egg, avoiding edges
     this.winningEggIndex = Math.floor(Math.random() * (this.numEggs - 40)) + 20;
   }
 
+  /**
+   * Preload game assets and setup loading UI
+   */
   preload() {
     console.log("Preloading assets...");
-    // Show loading progress
+    
+    // Create loading progress UI elements
     const progressBar = this.add.graphics();
     const progressBox = this.add.graphics();
     progressBox.fillStyle(0x222222, 0.8);
@@ -34,7 +44,7 @@ class EggHuntGame extends Phaser.Scene {
     });
     loadingText.setOrigin(0.5, 0.5);
 
-    // Loading progress events
+    // Setup loading progress events
     this.load.on('progress', function (value) {
       progressBar.clear();
       progressBar.fillStyle(0xffffff, 1);
@@ -47,18 +57,19 @@ class EggHuntGame extends Phaser.Scene {
       loadingText.destroy();
     });
 
-    
-    // Load the egg manifest
+    // Load the game's asset manifest (JSON file containing asset paths and info)
     this.load.json('game-manifest', 'game-manifest.json');
 
-    // Log preload complete
+    // Log when preload is complete
     this.load.on('complete', () => {
       console.log("Initial preload complete");
       this.initialPreloadComplete = true;
     });
   }
 
-  // Add this method to your class
+  /**
+   * Initialize sound objects from loaded audio files
+   */
   initializeSounds() {
     console.log("Initializing sounds from keys:", this.audioKeys);
     this.sounds = {};
@@ -76,36 +87,39 @@ class EggHuntGame extends Phaser.Scene {
     }
   }
 
+  /**
+   * Load assets from the manifest file
+   * @param {string} manifestName - The key of the JSON manifest
+   */
   loadAssets(manifestName) {
-    // process the manifest if available
+    // Check if manifest exists in cache
     if (this.cache.json.has(manifestName)) {
       const manifest = this.cache.json.get(manifestName);
       console.log("Manifest loaded:", manifest);
 
-      // debug log to help diagnose path issues
+      // Debug log to help diagnose path issues
       console.log("Current document location:", window.location.href);
 
-      // process image data from manifest and load any additional images
+      // Process image data from manifest and load any additional images
       if (manifest && manifest.images && manifest.images.length > 0) {
-        // start a second loading phase for the eggs
+        // Start a second loading phase for the assets
         let loadingStarted = false;
 
+        // Loop through each image in the manifest
         manifest.images.forEach(image => {
-          // Create a more reliable path
-          // We'll check if the path exists directly, or needs to be adjusted
           let path = image.path;
 
-          // If you're having issues with relative paths, try one of these approaches:
-          // Option 1: Use absolute path with CDN as fallback
+          // Process non-external paths
           if (!path.startsWith('http')) {
-            // try to load directly first, if that fails use the default images
-            //console.log(`Loading image: ${image.id} from ${path}`);
+            // Handle different asset types (audio, egg textures, environment textures, etc.)
             if (image.type == 'audio') {
               this.load.audio(image.id, path);
               this.audioKeys.push(image.id);
             } else {
               this.load.image(image.id, path);
               loadingStarted = true;
+              
+              // Categorize textures by type
               if (image.type == 'egg') this.eggTextureKeys.push(image.id);
               if (image.type == 'env') this.envTextureKeys.push(image.id);
               if (image.type == 'fg') this.fgTextureKeys.push(image.id);
@@ -113,16 +127,12 @@ class EggHuntGame extends Phaser.Scene {
           }
         });
 
-        // if we added images to load, start the loader
+        // If new assets were loaded, start the loader and set callback
         if (loadingStarted) {
           console.log("Starting secondary image loading");
-
-          // set up a callback for when loading completes
           this.load.once('complete', this.onAssetsLoaded, this);
-
-          // start loading the images
           this.load.start();
-          return; // exit here - continue once images are loaded
+          return; // Exit here - continue once images are loaded
         }
       }
     } else {
@@ -130,40 +140,54 @@ class EggHuntGame extends Phaser.Scene {
     }
   }
 
+  /**
+   * Create game objects and initialize the scene
+   */
   create() {
     console.log("Creating game elements...");
 
-    // create an array to store all available texture keys
-    this.eggTextureKeys = []; // start with default egg
-    this.envTextureKeys = []; // start with default env
+    // Initialize texture key arrays
+    this.eggTextureKeys = [];
+    this.envTextureKeys = [];
     this.fgTextureKeys = [];
     this.audioKeys = [];
 
+    // Load assets from the manifest
     this.loadAssets('game-manifest');
 
-    // If we reach here, we're using the default egg or didn't need secondary loading
+    // Initial setup of game world (will be called again after assets load)
     this.setupGameWorld();
   }
 
-  // This gets called after the assets finish loading
+  /**
+   * Called after secondary assets finish loading
+   */
   onAssetsLoaded() {
     console.log("Secondary assets load complete");
     console.log("Available egg textures:", this.eggTextureKeys);
+    
+    // Initialize sounds with loaded audio assets
     this.initializeSounds();
+    
+    // Setup the game world with the loaded assets
     this.setupGameWorld();
   }
 
-  // Update your playSound method to use the sound objects
+  /**
+   * Play a sound with optional random pitch variation
+   * @param {string} soundName - The key of the sound to play
+   * @param {boolean} randomPitch - Whether to apply random pitch variation
+   */
   playSound(soundName, randomPitch) {
     try {
       if (this.sounds && this.sounds[soundName]) {
+        // Apply random pitch if requested
         const soundPitch = randomPitch ? 0.8 + Math.random() * 0.4 : 1.0;
 
-        // Play with the random pitch
+        // Play the sound with the calculated pitch
         this.sounds[soundName].play({
           rate: soundPitch
         });
-        //console.log(`Playing sound: ${soundName} with pitch: ${soundPitch}`);
       } else {
         console.warn(`Sound ${soundName} not found in sounds collection`);
       }
@@ -172,112 +196,130 @@ class EggHuntGame extends Phaser.Scene {
     }
   }
 
+  /**
+   * Utility function to clamp a number between min and max values
+   * @param {number} num - The number to clamp
+   * @param {number} min - The minimum allowed value
+   * @param {number} max - The maximum allowed value
+   * @returns {number} - The clamped value
+   */
   clamp(num, min, max) {
     return Math.min(Math.max(num, min), max);
   }
 
+  /**
+   * Set up the game world with eggs, environment, and UI
+   */
   setupGameWorld() {
     console.log("Setting up game world with eggs...");
-    // Create a simplex noise instance
+    
+    // Create a simplex noise instance for natural-looking terrain generation
     let noise;
     try {
       noise = new SimplexNoise();
     } catch (error) {
       console.error('SimplexNoise not available:', error);
+      // Fallback to simple random noise if SimplexNoise isn't available
       noise = {
-        // Fallback if SimplexNoise isn't available
         noise2D: (x, y) => Math.random() * 2 - 1
       };
     }
 
-    // Create a large scrollable world
+    // Set camera bounds to match world size
     this.cameras.main.setBounds(0, 0, this.worldSizeWidth, this.worldSizeHeight);
 
-    // Create egg group
+    // Create physics group for eggs
     this.eggs = this.physics.add.group();
 
+    // Track if the special golden egg has been placed
     let goldenEggPlaced = false;
-    let idebug = 0;
-    // populate the world with eggs
+    
+    // Populate the world with environment tiles and eggs
     for (let i = 0; i < this.eggGridSizeWidth * this.eggGridSizeHeight; i++) {
-      // get x and y coordinate
+      // Calculate grid position
       const x = (i % this.eggGridSizeWidth) * this.eggWidth;
       const y = Math.floor(i / this.eggGridSizeWidth) * this.eggHeight;
 
-      // get noise value between -1 and 1
+      // Generate noise value for this position (-1 to 1)
       let noise_value = noise.noise2D((x / this.eggGridSizeWidth) * 0.05, (y / this.eggGridSizeHeight) * 0.05);
-      // clamp between 0 - 1
+      
+      // Convert noise to 0-1 range
       noise_value = (noise_value + 1) * 0.5;
-      // console.log(`noise: ${noise_value}`)
-      // select env or egg based on noise value
+      
+      // Select environment texture based on noise value
       let textureKey;
       let index = Math.floor(noise_value * 5);
       textureKey = this.envTextureKeys[index];
+      
+      // Create environment sprite
       const sprite = this.add.sprite(x + this.eggWidth / 2, y + this.eggHeight / 2, textureKey);
       sprite.setScale(1);
 
+      // Create egg if not on a dirt path (based on noise value)
       if (index < 3) {
-          let index = Math.floor(Math.random() * (this.eggTextureKeys.length - 1));
-          //index = this.clamp(index, 0, this.eggTextureKeys.length - 2);
-          //let index = idebug % this.eggTextureKeys.length;//Math.floor(Math.random() * this.eggTextureKeys.length - 1);
-          //console.log("index: " + this.eggTextureKeys[index]);
-          //idebug++;
-          textureKey = this.eggTextureKeys[index];
+        // Select random egg texture
+        let index = Math.floor(Math.random() * (this.eggTextureKeys.length - 1));
+        textureKey = this.eggTextureKeys[index];
+        
+        // Mark the winning egg position
+        if (i >= this.winningEggIndex && !goldenEggPlaced) {
+          goldenEggPlaced = true;
+          this.winningEggIndex = i;
+        }
+
+        // Create egg sprite with the selected texture
+        const egg = this.eggs.create(x + this.eggWidth / 2, y + this.eggHeight / 2, textureKey);
+
+        // Configure egg properties
+        egg.setScale(1.15);
+        egg.originalScale = egg.scale;
+        egg.setInteractive();
+        egg.index = i;
+        egg.scaleRate = 300 + (Math.random() * 700); // Used for breathing animation
+
+        // Handle egg clicks
+        egg.on('pointerdown', () => {
+          // Increment counter and update text
+          this.eggsCollected++;
+          this.collected.text = `Eggs Collected ${this.eggsCollected}`;
           
-          if (i >= this.winningEggIndex && !goldenEggPlaced) {
-            goldenEggPlaced = true;
-            this.winningEggIndex = i;
-            //textureKey = this.eggTextureKeys[this.eggTextureKeys.length-1];
-            //console.log(`winning egg at ${i % this.eggGridSizeWidth} ${Math.floor(i / this.eggGridSizeWidth)}`);
+          if (egg.index === this.winningEggIndex) {
+            // Found the winning egg!
+            egg.setTexture(this.eggTextureKeys[this.eggTextureKeys.length-1]);
+            this.showWinMessage();
+            this.playSound('audio02', false); // Play win sound
+          } else {
+            // Regular egg - make it disappear
+            egg.setVisible(false);
+            egg.disableInteractive();
+            this.playSound('audio01', true); // Play pickup sound with random pitch
           }
-          // create egg sprite with the selected texture
-          const egg = this.eggs.create(x + this.eggWidth / 2, y + this.eggHeight / 2, textureKey);
-
-          // customize egg
-          egg.setScale(1.15);
-          egg.originalScale = egg.scale;
-          egg.setInteractive();
-          egg.index = i;
-          egg.scaleRate = 300 + (Math.random() * 700);
-
-          // handle egg clicks
-          egg.on('pointerdown', () => {
-            // Increment counter and update text
-            this.eggsCollected++;
-            this.collected.text = `Eggs Collected ${this.eggsCollected}`;
-            if (egg.index === this.winningEggIndex) {
-              // found the winning egg!
-              egg.setTexture(this.eggTextureKeys[this.eggTextureKeys.length-1]);
-              this.showWinMessage();
-
-              // play winning sound
-              this.playSound('audio02', false);
-            } else {
-              // regular egg - make it disappear
-              egg.setVisible(false);
-              egg.disableInteractive();
-
-              // play pickup sound
-              this.playSound('audio01', true);
-            }
-          });
-        //}
+        });
       }
 
-      // foreground
-      if (Math.random() < 0.4) {
+      // Add random foreground decorations (grass, flowers, etc.)
+      if (Math.random() < 0.4 && this.fgTextureKeys.length > 0) {
         const fg_index = Math.floor(Math.random() * this.fgTextureKeys.length);
         textureKey = this.fgTextureKeys[fg_index];
-        // create fg sprite with the selected texture
         const sprite = this.add.sprite(x + this.eggWidth / 2, y + this.eggHeight / 2, textureKey);
-        sprite.setScale(1.2 + Math.random() * 0.5);
+        sprite.setScale(1.2 + Math.random() * 0.5); // Random size variation
       }
     }
 
-
-    // Improved camera controls (drag to scroll)
+    // Set camera zoom level
     this.cameras.main.setZoom(0.5);
 
+    // Set up camera drag controls
+    this.setupCameraDragControls();
+
+    // Add UI elements (instructions and egg counter)
+    this.setupUI();
+  }
+
+  /**
+   * Set up camera drag controls for navigating the world
+   */
+  setupCameraDragControls() {
     // Track drag state and starting position
     this.isDragging = false;
     this.dragStartX = 0;
@@ -295,7 +337,7 @@ class EggHuntGame extends Phaser.Scene {
       this.startScrollY = this.cameras.main.scrollY;
     });
 
-    // Handle mouse/touch move
+    // Handle mouse/touch move for camera panning
     this.input.on('pointermove', (pointer) => {
       if (this.isDragging) {
         // Calculate how far we've dragged
@@ -314,7 +356,7 @@ class EggHuntGame extends Phaser.Scene {
       }
     });
 
-    // Handle mouse/touch up
+    // Handle mouse/touch up and pointer leaving game area
     this.input.on('pointerup', () => {
       this.isDragging = false;
     });
@@ -322,8 +364,13 @@ class EggHuntGame extends Phaser.Scene {
     this.input.on('pointerout', () => {
       this.isDragging = false;
     });
+  }
 
-    // add instructions
+  /**
+   * Set up UI elements like instructions and egg counter
+   */
+  setupUI() {
+    // Add instructions text
     const instructions = this.add.text(0, 0, 'Find the special egg!\nClick eggs to pickup.\nDrag to move around.', {
       fontSize: '30px',
       fontFamily: 'Arial, sans-serif',
@@ -342,14 +389,12 @@ class EggHuntGame extends Phaser.Scene {
     instructions.setOrigin(1, 1);
     instructions.setScrollFactor(0);
     instructions.setDepth(100);
-
-    // Position it in the bottom right corner of the camera viewport
     instructions.setPosition(
       this.cameras.main.width + 700,
       this.cameras.main.height + 300
     );
 
-    // add collected
+    // Add egg collection counter
     this.collected = this.add.text(0, 0, `Eggs Collected ${this.eggsCollected}`, {
       fontSize: '30px',
       fontFamily: 'Arial, sans-serif',
@@ -368,15 +413,17 @@ class EggHuntGame extends Phaser.Scene {
     this.collected.setOrigin(0, 1);
     this.collected.setScrollFactor(0);
     this.collected.setDepth(100);
-
-    // Position it in the bottom left corner of the camera viewport
     this.collected.setPosition(
       -800,
       this.cameras.main.height + 300
     );
-      
   }
 
+  /**
+   * Update method called every frame
+   * @param {number} time - Current time
+   * @param {number} delta - Time since last frame
+   */
   update(time, delta) {
     // Safety check - make sure eggs group exists
     if (!this.eggs) return;
@@ -393,6 +440,7 @@ class EggHuntGame extends Phaser.Scene {
           if (egg.originalScale === undefined) {
             egg.originalScale = egg.scale || 1;
           }
+          // Apply "breathing" animation to eggs
           let breathScale = 1 + Math.sin(time / egg.scaleRate) * 0.05;
           egg.setScale(egg.originalScale * breathScale);
         }
@@ -402,8 +450,11 @@ class EggHuntGame extends Phaser.Scene {
     });
   }
 
+  /**
+   * Display win message when the player finds the special egg
+   */
   showWinMessage() {
-    // Add a background to make sure text is visible
+    // Add a background to make text more visible
     const textBg = this.add.rectangle(
       this.cameras.main.centerX,
       this.cameras.main.centerY,
@@ -416,6 +467,7 @@ class EggHuntGame extends Phaser.Scene {
     textBg.setScrollFactor(0);
     textBg.setDepth(1);
 
+    // Add the win message
     const winText = this.add.text(
       this.cameras.main.centerX,
       this.cameras.main.centerY,
@@ -442,29 +494,27 @@ class EggHuntGame extends Phaser.Scene {
   }
 }
 
-
-
 // Game configuration
 const config = {
-  type: Phaser.AUTO,
-  width: window.innerWidth,
-  height: window.innerHeight,
-  backgroundColor: '#00c947',
-  parent: 'game-container',
+  type: Phaser.AUTO,         // Use WebGL if available, fall back to Canvas
+  width: window.innerWidth,  // Full browser width
+  height: window.innerHeight, // Full browser height
+  backgroundColor: '#00c947', // Grass green background
+  parent: 'game-container',   // ID of container element
   physics: {
-    default: 'arcade'
+    default: 'arcade'        // Simple physics system
   },
   input: {
-    activePointers: 2,
-    dragDistanceThreshold: 5  // Helps to detect drags vs. clicks more accurately
+    activePointers: 2,       // Support multi-touch
+    dragDistanceThreshold: 5 // Helps to detect drags vs. clicks accurately
   },
-  scene: [EggHuntGame]
+  scene: [EggHuntGame]       // Our game scene
 };
 
 // Create and start the game
 const game = new Phaser.Game(config);
 
-// Handle window resizing
+// Handle window resizing to keep the game responsive
 window.addEventListener('resize', () => {
   game.scale.resize(window.innerWidth, window.innerHeight);
 });
