@@ -140,13 +140,6 @@ class EggHuntGame extends Phaser.Scene {
 
     this.loadAssets('game-manifest');
 
-    //this.sounds = {};
-    //this.sounds['egg-pickup'] = this.sound.add('egg-pickup');
-    //this.sounds['game-win'] = this.sound.add('game-win');
-    // Object.keys(this.gameAssets.audio).forEach(key => {
-    //   this.sounds[key] = this.sound.add(key);
-    // });
-
     // If we reach here, we're using the default egg or didn't need secondary loading
     this.setupGameWorld();
   }
