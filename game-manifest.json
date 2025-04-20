@@ -11,7 +11,7 @@
       { "id": "nogginegg", "path": "assets/images/eggs/NogginEgg.png", "type": "egg" },      
       { "id": "happy-egg", "path": "assets/images/eggs/happy-egg.png", "type": "egg" },
       { "id": "maple", "path": "assets/images/eggs/maple.png", "type": "egg" },
-      { "id": "maple_egg", "path": "assets/images/eggs/maple_egg.png", "type": "egg" },
+      { "id": "maple_egg", "path": "assets/images/eggs/Maple_Egg.png", "type": "egg" },
       { "id": "krillegg", "path": "assets/images/eggs/krillegg.png", "type": "egg" },
       { "id": "mapleEgg", "path": "assets/images/eggs/mapleEgg.png", "type": "egg" },
       { "id": "MegaEgg", "path": "assets/images/eggs/MegaEgg.png", "type": "egg" },
