@@ -15,28 +15,6 @@ class EggHuntGame extends Phaser.Scene {
     this.worldSizeHeight = this.eggGridSizeHeight * this.eggHeight; // Size of the scrollable area
 
     this.winningEggIndex = 6;//Math.floor(Math.random() * (this.numEggs - 40)) + 20;
-
-    // define default egg texture to use as fallback
-    //this.defaultEggTexture = 'egg-default';
-    //this.goldenEgg = 'egg-golden';
-
-    // define default env texture to use as fallback
-    //this.envDefault = 'env-default';
-
-    // Define gameAssets as a property of the class so it's accessible in all methods
-    /*
-    this.gameAssets = {
-      images: {
-        'egg-default': './assets/images/eggs/egg.png',
-        'egg-golden': './assets/images/eggs/egg_win.png',
-        'env-default': './assets/images/env/grass01.png',
-      },
-      audio: {
-        'egg-pickup': './assets/audio/egg-pickup.wav',
-        'game-win': './assets/audio/game-win.wav'
-      }
-    };
-    */
   }
 
   preload() {
@@ -72,17 +50,6 @@ class EggHuntGame extends Phaser.Scene {
     // Load the egg manifest
     this.load.json('game-manifest', 'game-manifest.json');
 
-    // Load the default egg texture
-    //this.load.image(this.defaultEggTexture, this.gameAssets.images['egg-default']);
-    //this.load.image(this.goldenEgg, this.gameAssets.images['egg-golden']);
-
-    // load environment textures
-    //this.load.image(this.envDefault, this.gameAssets.images['env-default']);
-
-    // Load audio
-    //this.load.audio('egg-pickup', this.gameAssets.audio['egg-pickup']);
-    //this.load.audio('game-win', this.gameAssets.audio['game-win']);
-    
     // Log preload complete
     this.load.on('complete', () => {
       console.log("Initial preload complete");
@@ -140,6 +107,7 @@ class EggHuntGame extends Phaser.Scene {
               loadingStarted = true;
               if (image.type == 'egg') this.eggTextureKeys.push(image.id);
               if (image.type == 'env') this.envTextureKeys.push(image.id);
+              if (image.type == 'fg') this.fgTextureKeys.push(image.id);
             }
           }
         });
@@ -255,8 +223,8 @@ class EggHuntGame extends Phaser.Scene {
       sprite.setScale(1);
 
       if (index < 3) {
-          let index = Math.floor(Math.random() * this.eggTextureKeys.length);
-          index = this.clamp(index, 0, this.eggTextureKeys.length - 2);
+          let index = Math.floor(Math.random() * (this.eggTextureKeys.length - 1));
+          //index = this.clamp(index, 0, this.eggTextureKeys.length - 2);
           //let index = idebug % this.eggTextureKeys.length;//Math.floor(Math.random() * this.eggTextureKeys.length - 1);
           //console.log("index: " + this.eggTextureKeys[index]);
           //idebug++;
@@ -306,7 +274,6 @@ class EggHuntGame extends Phaser.Scene {
         // create fg sprite with the selected texture
         const sprite = this.add.sprite(x + this.eggWidth / 2, y + this.eggHeight / 2, textureKey);
         sprite.setScale(1.2 + Math.random() * 0.5);
-        //sprite.setDepth(1);
       }
     }
 
@@ -425,7 +392,7 @@ class EggHuntGame extends Phaser.Scene {
     const textBg = this.add.rectangle(
       this.cameras.main.centerX,
       this.cameras.main.centerY,
-      600,
+      800,
       200,
       0x000000,
       0.5
@@ -437,9 +404,9 @@ class EggHuntGame extends Phaser.Scene {
     const winText = this.add.text(
       this.cameras.main.centerX,
       this.cameras.main.centerY,
-      `YOU FOUND IT!\n ${this.winningEggIndex}`,
+      `YOU FOUND THE GOLDEN EGG!\nTAKE A PICTURE AND\nSUBMIT TO TEAMS FOR A PRIZE!`,
       {
-        fontSize: '64px',
+        fontSize: '48px',
         fontFamily: 'Arial, sans-serif',
         color: '#ffff00',
         stroke: '#000000',
